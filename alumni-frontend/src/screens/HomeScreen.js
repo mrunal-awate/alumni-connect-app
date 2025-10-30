@@ -29,6 +29,11 @@ export default function HomeScreen({ navigation }) {
         onPress={() => navigation.navigate('Profile')}
       />
 
+      <Button
+        title="View Alumni"
+        onPress={() => navigation.navigate('AlumniList')}
+      />
+
       <View style={{ marginTop: 20 }}>
         <Button title="Log out" onPress={handleLogout} color="red" />
       </View>

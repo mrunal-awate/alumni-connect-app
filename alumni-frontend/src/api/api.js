@@ -1,16 +1,78 @@
-const API_URL = 'http://192.168.0.100:5000/api'; 
-// If you're using Android emulator use 10.0.2.2 to reach host machine.
-// If testing on real device and backend on same LAN, use your PC's local IP like "http://192.168.1.5:5000/api".
-// If using expo tunnel, you can use the tunnel URL or public host.
 
-async function postJson(path, body) {
+// const API_URL = 'http://192.168.0.103:5000/api'; // make sure this matches your backend
+
+// async function getJson(path, token) {
+//   const res = await fetch(`${API_URL}${path}`, {
+//     headers: { 
+//       'Content-Type': 'application/json',
+//       ...(token ? { Authorization: `Bearer ${token}` } : {})
+//     },
+//   });
+
+//   const text = await res.text(); // get raw response
+//   try {
+//     return JSON.parse(text);
+//   } catch (err) {
+//     console.log('Response not JSON:', text);
+//     throw err;
+//   }
+// }
+
+// export const getAllUsers = (token) => getJson('/users', token);
+
+// export const registerUser = (data) => 
+//   fetch(`${API_URL}/auth/register`, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(data),
+//   }).then(res => res.json());
+
+// export const loginUser = (data) => 
+//   fetch(`${API_URL}/auth/login`, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(data),
+//   }).then(res => res.json());
+
+
+
+const API_URL = 'http://192.168.0.103:5000/api'; // make sure this matches your backend
+
+// Generic GET request
+async function getJson(path, token) {
   const res = await fetch(`${API_URL}${path}`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(body)
+    headers: { 
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    },
   });
-  return res.json();
+
+  const text = await res.text(); // get raw response
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.log('Response not JSON:', text);
+    throw err;
+  }
 }
 
-export const registerUser = (data) => postJson('/auth/register', data);
-export const loginUser = (data) => postJson('/auth/login', data);
+// Auth APIs
+export const registerUser = (data) => 
+  fetch(`${API_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }).then(res => res.json());
+
+export const loginUser = (data) => 
+  fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }).then(res => res.json());
+
+// Alumni APIs
+export const getAllUsers = (token) => getJson('/users', token);
+
+// Fetch a single alumni by ID
+export const getUserById = (id, token) => getJson(`/users/${id}`, token);

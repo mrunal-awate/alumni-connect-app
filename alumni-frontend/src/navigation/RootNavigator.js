@@ -9,6 +9,10 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
+import AlumniListScreen from '../screens/alumni/AlumniListScreen';
+import AlumniDetailScreen from '../screens/alumni/AlumniDetailScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -37,9 +41,24 @@ export default function RootNavigator() {
             component={ProfileScreen}
             options={{ headerShown: true, title: 'My Profile' }}
           />
+          <Stack.Screen 
+          name="AlumniList" 
+          component={AlumniListScreen} 
+          options={{ title: 'Alumni List' }} 
+          />
+          <Stack.Screen 
+          name="AlumniDetail" 
+          component={AlumniDetailScreen} 
+          options={{ title: 'Alumni Details' }} 
+          />
         </>
       ) : (
         <>
+          <Stack.Screen
+            name="Welcome"
+            component={WelcomeScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Login"
             component={LoginScreen}

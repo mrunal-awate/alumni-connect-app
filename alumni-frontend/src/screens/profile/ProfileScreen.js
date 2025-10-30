@@ -89,6 +89,13 @@ export default function ProfileScreen() {
         onChangeText={text => handleChange('company', text)}
       />
 
+      {/* <Text>LinkedIn Url</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.linkdin}
+        onChangeText={text => handleChange('linkdin', text)}
+      /> */}
+
       <Button title={loading ? 'Saving...' : 'Save Profile'} onPress={handleSave} disabled={loading} />
     </ScrollView>
   );
