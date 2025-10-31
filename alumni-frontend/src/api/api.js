@@ -36,7 +36,7 @@
 
 
 
-const API_URL = 'http://192.168.0.103:5000/api'; // make sure this matches your backend
+const API_URL = 'http://192.168.0.101:5000/api'; // make sure this matches your backend
 
 // Generic GET request
 async function getJson(path, token) {
