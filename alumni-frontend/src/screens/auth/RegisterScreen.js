@@ -1,113 +1,37 @@
-// // screens/auth/RegisterScreen.js
-// import React, { useState } from 'react';
-// import { View, Text, TextInput, Button, Alert, StyleSheet, ActivityIndicator } from 'react-native';
-// import api from '../../api/axiosClient';
-
-// export default function RegisterScreen() {
-//   const [name, setName] = useState('');
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [loading, setLoading] = useState(false);
-
-//   const handleRegister = async () => {
-//     if (!name || !email || !password) {
-//       Alert.alert('Error', 'Please fill all fields');
-//       return;
-//     }
-
-//     setLoading(true);
-//     try {
-//       const res = await api.post('/api/auth/register', { name, email, password });
-
-//       if (res.data?.success) {
-//         Alert.alert('Registered!', 'You can now login.');
-//         // ✅ Do NOT navigate manually; RootNavigator or Login screen handles navigation
-//         setName('');
-//         setEmail('');
-//         setPassword('');
-//       } else {
-//         Alert.alert('Error', res.data?.message || 'Registration failed');
-//       }
-//     } catch (err) {
-//       console.log('Registration error:', err);
-//       Alert.alert('Error', 'Could not register');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Register</Text>
-
-//       <TextInput
-//         placeholder="Name"
-//         value={name}
-//         onChangeText={setName}
-//         style={styles.input}
-//       />
-//       <TextInput
-//         placeholder="Email"
-//         value={email}
-//         onChangeText={setEmail}
-//         keyboardType="email-address"
-//         style={styles.input}
-//         autoCapitalize="none"
-//       />
-//       <TextInput
-//         placeholder="Password"
-//         value={password}
-//         onChangeText={setPassword}
-//         secureTextEntry
-//         style={styles.input}
-//       />
-
-//       <Button
-//         title={loading ? 'Registering...' : 'Register'}
-//         onPress={handleRegister}
-//         disabled={loading}
-//       />
-
-//       {loading && (
-//         <View style={{ marginTop: 10 }}>
-//           <ActivityIndicator size="small" />
-//         </View>
-//       )}
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: { flex: 1, padding: 20, justifyContent: 'center' },
-//   title: { fontSize: 22, marginBottom: 20, fontWeight: 'bold', textAlign: 'center' },
-//   input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 15, borderRadius: 5 },
-// });
-
-
 // screens/auth/RegisterScreen.js
-
-// screens/auth/RegisterScreen.js
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, ActivityIndicator } from 'react-native';
-import api from '../../api/axiosClient';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, Button, Alert, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
+import { registerUser } from '../../api/api';
+import { AuthContext } from '../../context/AuthContext'; // ✅ Correct import
 
 export default function RegisterScreen({ navigation }) {
+  const { login } = useContext(AuthContext); // optional auto-login
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!name || !email || !password) {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
 
     setLoading(true);
-    try {
-      const res = await api.post('/api/auth/register', { name, email, password });
+    Keyboard.dismiss();
 
-      if (res.data?.success) {
+    try {
+      const res = await registerUser({
+        name: trimmedName,
+        email: trimmedEmail,
+        password: trimmedPassword,
+      });
+
+      if (res.success) {
         Alert.alert(
           'Registered!',
           'You can now login.',
@@ -115,23 +39,28 @@ export default function RegisterScreen({ navigation }) {
             {
               text: 'OK',
               onPress: () => {
-                // Clear inputs
                 setName('');
                 setEmail('');
                 setPassword('');
-                // Navigate to Login screen safely
-                navigation.replace('Login');
+                navigation.replace('Login'); // Navigate to login screen
               },
             },
           ],
           { cancelable: false }
         );
+
+        // Optional: Auto-login after registration
+        // try {
+        //   await login(trimmedEmail, trimmedPassword);
+        // } catch (err) {
+        //   console.log('Auto-login failed:', err.message);
+        // }
       } else {
-        Alert.alert('Error', res.data?.message || 'Registration failed');
+        Alert.alert('Error', res.message || 'Registration failed');
       }
     } catch (err) {
-      console.log('Registration error:', err);
-      Alert.alert('Error', 'Could not register. Please check your network or try again.');
+      console.error('Registration error:', err.message);
+      Alert.alert('Error', err.message || 'Could not register. Please check your network or try again.');
     } finally {
       setLoading(false);
     }
@@ -169,17 +98,10 @@ export default function RegisterScreen({ navigation }) {
         disabled={loading}
       />
 
-      {loading && (
-        <View style={{ marginTop: 10 }}>
-          <ActivityIndicator size="small" color="#0000ff" />
-        </View>
-      )}
+      {loading && <ActivityIndicator size="small" color="#0000ff" style={{ marginTop: 10 }} />}
 
       <View style={{ marginTop: 20 }}>
-        <Button
-          title="Back to Login"
-          onPress={() => navigation.navigate('Login')}
-        />
+        <Button title="Back to Login" onPress={() => navigation.navigate('Login')} />
       </View>
     </View>
   );
