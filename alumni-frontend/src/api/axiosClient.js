@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getToken } from '../utils/secureStore';
 
 // Replace with your backend IP + port
-const BASE_URL = 'http://192.168.0.104:5000';
+const BASE_URL = 'http://192.168.0.103.51:5000';
 
 const api = axios.create({
   baseURL: BASE_URL,

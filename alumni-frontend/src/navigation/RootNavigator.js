@@ -14,10 +14,10 @@ import AlumniListScreen from '../screens/alumni/AlumniListScreen';
 import AlumniDetailScreen from '../screens/alumni/AlumniDetailScreen';
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();         // Create a stack navigator
 
 export default function RootNavigator() {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);        // Get user and loading state from AuthContext
 
   if (loading) {
     return (

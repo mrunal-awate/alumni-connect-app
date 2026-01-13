@@ -10,7 +10,7 @@ import AlumniListScreen from '../screens/alumni/AlumniListScreen';
 import AlumniDetailScreen from '../screens/alumni/AlumniDetailScreen';
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();               // Create a stack navigator
 
 export default function AppNavigator() {
   return (
