@@ -4,7 +4,7 @@ import HomeScreen from '../../screens/HomeScreen';
 import MembersScreen from '../../screens/MembersScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();                 // Create a bottom tab navigator
 
 export default function AppTabs() {
   return (

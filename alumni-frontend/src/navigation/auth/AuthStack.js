@@ -5,7 +5,7 @@ import RegisterScreen from '../../screens/auth/RegisterScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function AuthStack() {
+export default function AuthStack() {               // Create a stack navigator
   return (
     <Stack.Navigator>
       <Stack.Screen name="Login" component={LoginScreen} />
