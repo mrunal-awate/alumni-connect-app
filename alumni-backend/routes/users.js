@@ -59,8 +59,8 @@ const {
   getUserById,
   updateUserProfile,
   uploadProfilePhoto,
-} = require('../controllers/userController');
-const { verifyToken } = require('../middleware/authMiddleware');
+} = require('../controllers/userController');                           // Import controller functions
+const { verifyToken } = require('../middleware/authMiddleware');          // Auth middleware
 
 /* -------------------------------------------------------------------------- */
 /*                        🧩 Ensure uploads directory exists                   */

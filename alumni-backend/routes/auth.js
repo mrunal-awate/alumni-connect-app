@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Mongoose model
 
-const JWT_SECRET = process.env.JWT_SECRET || 'somesecret';
+const JWT_SECRET = process.env.JWT_SECRET || 'somesecret';          // Use environment variable in production
 
 // Helper function to standardize user object response
 const getStandardUserResponse = (userDoc) => {
