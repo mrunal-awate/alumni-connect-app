@@ -65,7 +65,7 @@ const { verifyToken } = require('../middleware/authMiddleware');          // Aut
 /* -------------------------------------------------------------------------- */
 /*                        🧩 Ensure uploads directory exists                   */
 /* -------------------------------------------------------------------------- */
-const uploadsDir = path.join(__dirname, '../uploads');
+const uploadsDir = path.join(__dirname, '../uploads');       
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -78,7 +78,7 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}${path.extname(file.originalname)}`;
+    const uniqueName = `${Date.now()}${path.extname(file.originalname)}`;           // unique filename
     cb(null, uniqueName);
   },
 });
