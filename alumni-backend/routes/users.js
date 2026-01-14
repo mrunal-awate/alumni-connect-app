@@ -88,7 +88,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
   fileFilter: (req, file, cb) => {
     const allowed = /jpeg|jpg|png/;
-    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());            // Check file extension
     const mime = allowed.test(file.mimetype);
     if (ext && mime) cb(null, true);
     else cb(new Error('Only JPEG, JPG, or PNG images are allowed!'));
