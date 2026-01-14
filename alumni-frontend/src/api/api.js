@@ -195,199 +195,296 @@
 
 
 
-// api/api.js
-// Base URL — make sure it matches your backend (run `ipconfig` to confirm your local IP)
-const API_URL = 'http://192.168.0.105:5000/api';                  // Update this to your backend server address(local IP for testing)
 
-/* -------------------------------------------------------------------------- */
-/*                             🧩 HELPER FUNCTIONS                             */
-/* -------------------------------------------------------------------------- */
 
-/**
- * Safely parse a JSON response body.
- * Prevents crashes on empty or invalid responses.
- */
-const safeParseJson = async (res) => {
-  try {
-    const text = await res.text();
-    if (!text) {
-      return { success: false, message: `Empty response from server (status ${res.status})` };
-    }
-    return JSON.parse(text);
-  } catch (e) {
-    return { success: false, message: `Invalid JSON format received from server (status ${res.status})` };
-  }
-};
 
-/**
- * Generic GET request wrapper with optional token.
- */
-export async function getJson(path, token) {
-  try {
-    const res = await fetch(`${API_URL}${path}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
 
-    const data = await safeParseJson(res);
 
-    if (!res.ok) {
-      const msg = data.message || `Request failed with status ${res.status}`;
-      console.error(`❌ GET ${path} → ${msg}`);
-      return { success: false, message: msg };
-    }
 
-    return data;
-  } catch (err) {
-    const msg = err.message.includes('Network request failed')
-      ? `NETWORK ERROR: Could not reach backend at ${API_URL}`
-      : err.message;
-    console.error('🌐 GET error:', msg);
-    throw new Error(msg);
-  }
-}
 
-/* -------------------------------------------------------------------------- */
-/*                               🔐 AUTH ROUTES                                */
-/* -------------------------------------------------------------------------- */
 
-/**
- * Register a new user.
- */
+// --------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // api/api.js
+// // Base URL — make sure it matches your backend (run `ipconfig` to confirm your local IP)
+// const API_URL = 'http://192.168.0.105:5000/api';                  // Update this to your backend server address(local IP for testing)
+
+// /* -------------------------------------------------------------------------- */
+// /*                             🧩 HELPER FUNCTIONS                             */
+// /* -------------------------------------------------------------------------- */
+
+// /**
+//  * Safely parse a JSON response body.
+//  * Prevents crashes on empty or invalid responses.
+//  */
+// const safeParseJson = async (res) => {
+//   try {
+//     const text = await res.text();
+//     if (!text) {
+//       return { success: false, message: `Empty response from server (status ${res.status})` };
+//     }
+//     return JSON.parse(text);
+//   } catch (e) {
+//     return { success: false, message: `Invalid JSON format received from server (status ${res.status})` };
+//   }
+// };
+
+// /**
+//  * Generic GET request wrapper with optional token.
+//  */
+// export async function getJson(path, token) {
+//   try {
+//     const res = await fetch(`${API_URL}${path}`, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+//       },
+//     });
+
+//     const data = await safeParseJson(res);
+
+//     if (!res.ok) {
+//       const msg = data.message || `Request failed with status ${res.status}`;
+//       console.error(`❌ GET ${path} → ${msg}`);
+//       return { success: false, message: msg };
+//     }
+
+//     return data;
+//   } catch (err) {
+//     const msg = err.message.includes('Network request failed')
+//       ? `NETWORK ERROR: Could not reach backend at ${API_URL}`
+//       : err.message;
+//     console.error('🌐 GET error:', msg);
+//     throw new Error(msg);
+//   }
+// }
+
+// /* -------------------------------------------------------------------------- */
+// /*                               🔐 AUTH ROUTES                                */
+// /* -------------------------------------------------------------------------- */
+
+// /**
+//  * Register a new user.
+//  */
+// export const registerUser = async (data) => {
+//   try {
+//     const res = await fetch(`${API_URL}/auth/register`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(data),
+//     });
+
+//     const json = await safeParseJson(res);
+//     if (!res.ok) throw new Error(json.message || `Registration failed (status ${res.status})`);
+
+//     return { success: json.success ?? true, message: json.message || 'Registration successful' };
+//   } catch (err) {
+//     const msg = err.message.includes('Network request failed')
+//       ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
+//       : err.message;
+//     console.error('Register error:', msg);
+//     throw new Error(msg);
+//   }
+// };
+
+// /**
+//  * Login user and return token + user data.
+//  */
+// export const loginUser = async (data) => {
+//   try {
+//     const res = await fetch(`${API_URL}/auth/login`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(data),
+//     });
+
+//     const json = await safeParseJson(res);
+//     if (!res.ok) throw new Error(json.message || `Login failed (status ${res.status})`);
+
+//     if (!json.token || !json.user) {
+//       throw new Error('Login succeeded but server response is missing token or user.');
+//     }
+
+//     return { success: true, message: json.message || 'Login successful', token: json.token, user: json.user };
+//   } catch (err) {
+//     const msg = err.message.includes('Network request failed')
+//       ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
+//       : err.message;
+//     console.error('Login error:', msg);
+//     throw new Error(msg);
+//   }
+// };
+
+// /* -------------------------------------------------------------------------- */
+// /*                               👥 USER ROUTES                                */
+// /* -------------------------------------------------------------------------- */
+
+// /**
+//  * Fetch all users (alumni directory).
+//  * ✅ FIXED: Explicitly check for .success=false responses
+//  * ✅ FIXED: Added defensive return if API path changes
+//  */
+// export const getAllUsers = async (token) => {
+//   const data = await getJson('/users', token);
+//   if (!data || data.success === false) {
+//     return { users: [] };
+//   }
+//   return data;
+// };
+
+// /**
+//  * Fetch single user by ID.
+//  */
+// export const getUserById = async (id, token) => getJson(`/users/${id}`, token);
+
+// /**
+//  * Update user profile (basic info).
+//  */
+// export const updateUserProfile = async (data, token) => {
+//   try {
+//     const res = await fetch(`${API_URL}/users/update`, {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(data),
+//     });
+
+//     const json = await safeParseJson(res);
+//     if (!res.ok) throw new Error(json.message || `Update failed (status ${res.status})`);
+
+//     return { success: true, message: json.message || 'Profile updated successfully', user: json.user || null };
+//   } catch (err) {
+//     const msg = err.message.includes('Network request failed')
+//       ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
+//       : err.message;
+//     console.error('Update profile error:', msg);
+//     throw new Error(msg);
+//   }
+// };
+
+// /**
+//  * Upload profile photo (multipart/form-data)
+//  */
+// export const uploadProfilePhoto = async (photoUri, token) => {
+//   try {
+//     const formData = new FormData();
+//     formData.append('photo', {
+//       uri: photoUri,
+//       name: 'profile.jpg',
+//       type: 'image/jpeg',
+//     });
+
+//     const res = await fetch(`${API_URL}/users/upload-photo`, {
+//       method: 'POST',
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: formData,
+//     });
+
+//     const json = await safeParseJson(res);
+//     if (!res.ok) throw new Error(json.message || `Photo upload failed (status ${res.status})`);
+
+//     return {
+//       success: true,
+//       message: json.message || 'Photo uploaded successfully',
+//       imageUrl: json.imageUrl || json.photoUrl || null,
+//     };
+//   } catch (err) {
+//     const msg = err.message.includes('Network request failed')
+//       ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
+//       : err.message;
+//     console.error('Upload photo error:', msg);
+//     throw new Error(msg);
+//   }
+// };
+
+
+
+
+
+
+
+// -----------------------upper one is main ------ changes start here below this --------------------
+
+
+
+
+
+
+
+
+
+
+import api from "./axiosClient";
+
+/* ------------------------- AUTH ------------------------- */
 export const registerUser = async (data) => {
-  try {
-    const res = await fetch(`${API_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    const json = await safeParseJson(res);
-    if (!res.ok) throw new Error(json.message || `Registration failed (status ${res.status})`);
-
-    return { success: json.success ?? true, message: json.message || 'Registration successful' };
-  } catch (err) {
-    const msg = err.message.includes('Network request failed')
-      ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
-      : err.message;
-    console.error('Register error:', msg);
-    throw new Error(msg);
-  }
+  const res = await api.post("/api/auth/register", data);
+  return res.data;
 };
 
-/**
- * Login user and return token + user data.
- */
 export const loginUser = async (data) => {
-  try {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    const json = await safeParseJson(res);
-    if (!res.ok) throw new Error(json.message || `Login failed (status ${res.status})`);
-
-    if (!json.token || !json.user) {
-      throw new Error('Login succeeded but server response is missing token or user.');
-    }
-
-    return { success: true, message: json.message || 'Login successful', token: json.token, user: json.user };
-  } catch (err) {
-    const msg = err.message.includes('Network request failed')
-      ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
-      : err.message;
-    console.error('Login error:', msg);
-    throw new Error(msg);
-  }
+  const res = await api.post("/api/auth/login", data);
+  return res.data;
 };
 
-/* -------------------------------------------------------------------------- */
-/*                               👥 USER ROUTES                                */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Fetch all users (alumni directory).
- * ✅ FIXED: Explicitly check for .success=false responses
- * ✅ FIXED: Added defensive return if API path changes
- */
-export const getAllUsers = async (token) => {
-  const data = await getJson('/users', token);
-  if (!data || data.success === false) {
-    return { users: [] };
-  }
-  return data;
+export const getMe = async () => {
+  const res = await api.get("/api/auth/me");
+  return res.data;
 };
 
-/**
- * Fetch single user by ID.
- */
-export const getUserById = async (id, token) => getJson(`/users/${id}`, token);
-
-/**
- * Update user profile (basic info).
- */
-export const updateUserProfile = async (data, token) => {
-  try {
-    const res = await fetch(`${API_URL}/users/update`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    const json = await safeParseJson(res);
-    if (!res.ok) throw new Error(json.message || `Update failed (status ${res.status})`);
-
-    return { success: true, message: json.message || 'Profile updated successfully', user: json.user || null };
-  } catch (err) {
-    const msg = err.message.includes('Network request failed')
-      ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
-      : err.message;
-    console.error('Update profile error:', msg);
-    throw new Error(msg);
-  }
+/* ------------------------- USERS ------------------------- */
+export const getAlumni = async (filters = {}) => {
+  const query = new URLSearchParams(filters).toString();
+  const res = await api.get(`/api/users?${query}`);
+  return res.data;
 };
 
-/**
- * Upload profile photo (multipart/form-data)
- */
-export const uploadProfilePhoto = async (photoUri, token) => {
-  try {
-    const formData = new FormData();
-    formData.append('photo', {
-      uri: photoUri,
-      name: 'profile.jpg',
-      type: 'image/jpeg',
-    });
+export const getUserById = async (id) => {
+  const res = await api.get(`/api/users/${id}`);
+  return res.data;
+};
 
-    const res = await fetch(`${API_URL}/users/upload-photo`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+export const updateProfile = async (data) => {
+  const res = await api.put("/api/users/update", data);
+  return res.data;
+};
 
-    const json = await safeParseJson(res);
-    if (!res.ok) throw new Error(json.message || `Photo upload failed (status ${res.status})`);
+export const uploadPhoto = async (photoUri) => {
+  const form = new FormData();
+  form.append("photo", {
+    uri: photoUri,
+    name: "profile.jpg",
+    type: "image/jpeg",
+  });
 
-    return {
-      success: true,
-      message: json.message || 'Photo uploaded successfully',
-      imageUrl: json.imageUrl || json.photoUrl || null,
-    };
-  } catch (err) {
-    const msg = err.message.includes('Network request failed')
-      ? `NETWORK ERROR: Backend not reachable at ${API_URL}`
-      : err.message;
-    console.error('Upload photo error:', msg);
-    throw new Error(msg);
-  }
+  const res = await api.put("/api/users/update", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return res.data;
+};
+
+/* ------------------------- ADMIN ------------------------- */
+export const approveUser = async (userId) => {
+  const res = await api.put(`/api/users/approve/${userId}`);
+  return res.data;
 };
