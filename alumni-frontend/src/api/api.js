@@ -197,7 +197,7 @@
 
 // api/api.js
 // Base URL — make sure it matches your backend (run `ipconfig` to confirm your local IP)
-const API_URL = 'http://192.168.0.103:5000/api';                  // Update this to your backend server address(local IP for testing)
+const API_URL = 'http://192.168.0.105:5000/api';                  // Update this to your backend server address(local IP for testing)
 
 /* -------------------------------------------------------------------------- */
 /*                             🧩 HELPER FUNCTIONS                             */

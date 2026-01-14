@@ -15,6 +15,17 @@
 
 
 
+
+
+// -----------------------------------------------------------------------
+
+
+
+
+
+
+
+
 // models/User.js
 const mongoose = require('mongoose');
 
@@ -50,3 +61,21 @@ UserSchema.virtual('gradYear').get(function () {
 });
 
 module.exports = mongoose.model('User', UserSchema);
+
+
+
+
+
+
+
+
+
+
+// ----------------------------upper one is main ------ changes start from below here --------------------
+
+
+
+
+
+
+
