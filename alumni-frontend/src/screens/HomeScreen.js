@@ -70,11 +70,11 @@
 
 
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from "react-native";          // Import Image component
 import { AuthContext } from "../context/AuthContext";
 
-export default function HomeScreen({ navigation }) {
-  const { user, logout } = useContext(AuthContext);
+export default function HomeScreen({ navigation }) {                    // Home screen showing feed and navigation
+  const { user, logout } = useContext(AuthContext);                     // Get user info and logout function from context
   const [posts, setPosts] = useState([]);
 
   // Temporary demo posts (backend feed will replace this)
@@ -95,7 +95,7 @@ export default function HomeScreen({ navigation }) {
     ]);
   }, []);
 
-  const renderPost = ({ item }) => (
+  const renderPost = ({ item }) => (                                    // Render each post in the feed
     <View style={styles.card}>
       <Text style={styles.author}>{item.author}</Text>
       <Text style={styles.role}>{item.role}</Text>
