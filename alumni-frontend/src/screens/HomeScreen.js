@@ -126,7 +126,7 @@ export default function HomeScreen({ navigation }) {
 
       {/* Bottom Buttons */}
       <View style={styles.bottom}>
-        <TouchableOpacity onPress={() => navigation.navigate("AlumniList")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Alumni")}>
           <Text style={styles.link}>Find Alumni</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={logout}>

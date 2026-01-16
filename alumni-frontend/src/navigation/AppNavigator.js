@@ -120,7 +120,7 @@ import { AuthContext } from "../context/AuthContext";
 import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/RegisterScreen";
 import AlumniDetailScreen from "../screens/alumni/AlumniDetailScreen";
-import AppTabs from "./AppTabs";
+import AppTabs from "./app/AppTabs";
 
 const Stack = createNativeStackNavigator();
 

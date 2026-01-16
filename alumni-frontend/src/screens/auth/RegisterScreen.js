@@ -6,7 +6,7 @@
 
 // export default function RegisterScreen({ navigation }) {
 //   const { login } = useContext(AuthContext); // optional auto-login
-//   const [name, setName] = useState('');
+//   const [name, setName] = useState('');                                    // User's full name
 //   const [email, setEmail] = useState('');
 //   const [password, setPassword] = useState('');
 //   const [loading, setLoading] = useState(false);
@@ -165,12 +165,24 @@ export default function RegisterScreen({ navigation }) {
   const register = async () => {
     try {
       setError("");
-      await registerUser(form);
+
+      const payload = {
+        ...form,
+        role: form.role.toLowerCase().trim(), // 🔥 FIX: ensure enum match
+        college: form.college.trim(),
+        branch: form.branch.trim(),
+        batch: form.batch.trim(),
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
+      };
+
+      await registerUser(payload);
       navigation.replace("Login");
     } catch (err) {
       setError(err.message);
     }
   };
+
 
   return (
     <ScrollView style={styles.container}>

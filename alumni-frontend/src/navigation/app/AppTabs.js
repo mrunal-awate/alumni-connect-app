@@ -50,9 +50,9 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-import HomeScreen from "../screens/HomeScreen";
-import AlumniListScreen from "../screens/alumni/AlumniListScreen";
-import ProfileScreen from "../screens/profile/ProfileScreen";
+import HomeScreen from "../../screens/HomeScreen";
+import AlumniListScreen from "../../screens/alumni/AlumniListScreen";
+import ProfileScreen from "../../screens/profile/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
