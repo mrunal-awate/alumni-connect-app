@@ -209,6 +209,90 @@
 
 
 
+// const User = require("../models/User");
+
+// /* --------------------------- Get Alumni Directory --------------------------- */
+// exports.getAllUsers = async (req, res) => {
+//   try {
+//     const { college, branch, batch } = req.query;
+
+//     let filter = { approved: true };
+
+//     if (college) filter.college = college;
+//     if (branch) filter.branch = branch;
+//     if (batch) filter.batch = batch;
+
+//     const users = await User.find(filter).sort({ createdAt: -1 });
+
+//     res.json({ success: true, users });
+//   } catch (err) {
+//     console.error("Fetch users error:", err);
+//     res.status(500).json({ success: false, message: "Failed to fetch users" });
+//   }
+// };
+
+// /* ------------------------------ Get Profile ------------------------------ */
+// exports.getUserById = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
+//     if (!user)
+//       return res.status(404).json({ success: false, message: "User not found" });
+
+//     res.json({ success: true, user });
+//   } catch {
+//     res.status(500).json({ success: false, message: "Failed to load profile" });
+//   }
+// };
+
+// /* ------------------------------ Update Profile ------------------------------ */
+// exports.updateUserProfile = async (req, res) => {
+//   try {
+//     const updates = req.body;
+//     if (req.file) updates.photoUrl = `/uploads/${req.file.filename}`;
+
+//     const user = await User.findByIdAndUpdate(req.userId, updates, { new: true });
+
+//     res.json({ success: true, user });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, message: "Update failed" });
+//   }
+// };
+
+// /* --------------------------- Upload Profile Photo --------------------------- */
+// exports.uploadProfilePhoto = async (req, res) => {
+//   try {
+//     const photoUrl = `/uploads/${req.file.filename}`;
+
+//     const user = await User.findByIdAndUpdate(
+//       req.userId,
+//       { photoUrl },
+//       { new: true }
+//     );
+
+//     res.json({ success: true, photoUrl, user });
+//   } catch {
+//     res.status(500).json({ success: false, message: "Upload failed" });
+//   }
+// };
+
+
+
+
+
+
+
+
+// ------------------------------------ new change in file starts from here ------------------------------------
+
+
+
+
+
+
+
+
+
 const User = require("../models/User");
 
 /* --------------------------- Get Alumni Directory --------------------------- */
@@ -216,62 +300,127 @@ exports.getAllUsers = async (req, res) => {
   try {
     const { college, branch, batch } = req.query;
 
-    let filter = { approved: true };
+    const filter = { approved: true };
 
     if (college) filter.college = college;
     if (branch) filter.branch = branch;
     if (batch) filter.batch = batch;
 
-    const users = await User.find(filter).sort({ createdAt: -1 });
+    const users = await User.find(filter)
+      .select("-password")
+      .sort({ createdAt: -1 });
 
     res.json({ success: true, users });
   } catch (err) {
-    console.error("Fetch users error:", err);
-    res.status(500).json({ success: false, message: "Failed to fetch users" });
+    console.error("Fetch users error:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+    });
   }
 };
 
 /* ------------------------------ Get Profile ------------------------------ */
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user)
-      return res.status(404).json({ success: false, message: "User not found" });
+    const user = await User.findById(req.params.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     res.json({ success: true, user });
-  } catch {
-    res.status(500).json({ success: false, message: "Failed to load profile" });
+  } catch (err) {
+    console.error("Get user error:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to load profile",
+    });
   }
 };
 
 /* ------------------------------ Update Profile ------------------------------ */
 exports.updateUserProfile = async (req, res) => {
   try {
-    const updates = req.body;
-    if (req.file) updates.photoUrl = `/uploads/${req.file.filename}`;
+    // ✅ FIX: correct user id source
+    const userId = req.user.id;
 
-    const user = await User.findByIdAndUpdate(req.userId, updates, { new: true });
+    const updates = {
+      name: req.body.name,
+      company: req.body.company,
+      city: req.body.city,
+      bio: req.body.bio,
+    };
 
-    res.json({ success: true, user });
+    if (req.file) {
+      updates.photoUrl = `/uploads/${req.file.filename}`;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updates,
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      user,
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Update failed" });
+    console.error("Update profile error:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Update failed",
+    });
   }
 };
 
 /* --------------------------- Upload Profile Photo --------------------------- */
 exports.uploadProfilePhoto = async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
+    const userId = req.user.id;
     const photoUrl = `/uploads/${req.file.filename}`;
 
     const user = await User.findByIdAndUpdate(
-      req.userId,
+      userId,
       { photoUrl },
       { new: true }
-    );
+    ).select("-password");
 
-    res.json({ success: true, photoUrl, user });
-  } catch {
-    res.status(500).json({ success: false, message: "Upload failed" });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      photoUrl,
+      user,
+    });
+  } catch (err) {
+    console.error("Upload photo error:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Upload failed",
+    });
   }
 };

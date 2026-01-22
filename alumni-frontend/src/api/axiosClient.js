@@ -134,14 +134,26 @@ api.interceptors.request.use(async (config) => {
 /* ---------------- Global error logger ---------------- */
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response) {
-      console.log("API Error:", error.response.data);
-    } else {
-      console.log("Network Error:", error.message);
+  async (error) => {
+    // Network error (no response)
+    if (!error.response) {
+      console.log("🌐 Network Error:", error.message);
+      return Promise.reject(error);
     }
+
+    const { status } = error.response;
+
+    // ❗ ONLY logout on 401 / 403
+    if (status === 401 || status === 403) {
+      console.log("🔐 Unauthorized, token invalid");
+      // DO NOT auto-delete token here
+      // Let AuthContext decide
+    }
+
+    console.log("API Error:", error.response.data);
     return Promise.reject(error);
   }
 );
+
 
 export default api;

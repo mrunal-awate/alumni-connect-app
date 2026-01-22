@@ -167,10 +167,16 @@ export const AuthProvider = ({ children }) => {
           await deleteToken("userToken");
           setUser(null);
         }
-      } catch {
-        await deleteToken("userToken");
-        setUser(null);
-      }
+      } catch (err) {
+          console.log("Auth error:", err.message);
+
+          // Logout ONLY if backend says unauthorized
+          if (err.response?.status === 401 || err.response?.status === 403) {
+            await deleteToken("userToken");
+            setUser(null);
+          }
+      } 
+
       setLoading(false);
     };
 

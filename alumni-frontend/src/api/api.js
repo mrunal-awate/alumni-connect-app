@@ -500,6 +500,78 @@
 
 
 
+// import api from "./axiosClient";
+
+// /* ------------------------- AUTH ------------------------- */
+// export const registerUser = async (data) => {
+//   const res = await api.post("/api/auth/register", data);
+//   return res.data;
+// };
+
+// export const loginUser = async (data) => {
+//   const res = await api.post("/api/auth/login", data);
+//   return res.data;
+// };
+
+// export const getMe = async () => {
+//   const res = await api.get("/api/auth/me");
+//   return res.data;
+// };
+
+// /* ------------------------- USERS ------------------------- */
+// export const getAlumni = async (filters = {}) => {
+//   const query = new URLSearchParams(filters).toString();
+//   const res = await api.get(`/api/users?${query}`);
+//   return res.data;
+// };
+
+// export const getUserById = async (id) => {
+//   const res = await api.get(`/api/users/${id}`);
+//   return res.data;
+// };
+
+// /* ------------------------- PROFILE ------------------------- */
+// export const updateProfile = async (data) => {
+//   const res = await api.put("/api/users/update", data);
+//   return res.data;
+// };
+
+// export const uploadPhoto = async (photoUri) => {
+//   const form = new FormData();
+//   form.append("photo", {
+//     uri: photoUri,
+//     name: "profile.jpg",
+//     type: "image/jpeg",
+//   });
+
+//   const res = await api.post("/api/users/upload-photo", form, {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//   });
+//   return res.data;
+// };
+
+// /* ------------------------- ADMIN ------------------------- */
+// export const approveUser = async (userId) => {
+//   const res = await api.put(`/api/users/approve/${userId}`);
+//   return res.data;
+// };
+
+
+
+
+
+
+
+// ------------------------------------------------------ upper one is main ------ changes start from below here --------------------
+
+
+
+
+
+
+
 import api from "./axiosClient";
 
 /* ------------------------- AUTH ------------------------- */
@@ -536,15 +608,22 @@ export const updateProfile = async (data) => {
   return res.data;
 };
 
+/* ✅ FIXED: MUST be PUT (not POST) */
 export const uploadPhoto = async (photoUri) => {
   const form = new FormData();
+
   form.append("photo", {
     uri: photoUri,
     name: "profile.jpg",
     type: "image/jpeg",
   });
 
-  const res = await api.post("/api/users/upload-photo", form);
+  const res = await api.put("/api/users/upload-photo", form, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return res.data;
 };
 

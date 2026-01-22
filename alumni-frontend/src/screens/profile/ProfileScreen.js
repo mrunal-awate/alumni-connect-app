@@ -309,6 +309,407 @@
 
 
 
+// import React, { useContext, useEffect, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   ScrollView,
+//   Image,
+//   TouchableOpacity,
+//   ActivityIndicator,
+// } from "react-native";
+// import { AuthContext } from "../../context/AuthContext";
+// import { updateProfile, uploadPhoto } from "../../api/api";
+// import * as ImagePicker from "expo-image-picker";
+
+// export default function ProfileScreen() {
+//   const { user, setUser } = useContext(AuthContext);
+//   const [loading, setLoading] = useState(false);
+//   const [photo, setPhoto] = useState(null);
+
+//   const [form, setForm] = useState({
+//     name: "",
+//     company: "",
+//     city: "",
+//     bio: "",
+//   });
+
+//   useEffect(() => {
+//     if (user) {
+//       setForm({
+//         name: user.name || "",
+//         company: user.company || "",
+//         city: user.city || "",
+//         bio: user.bio || "",
+//       });
+//       setPhoto(user.photoUrl || null);
+//     }
+//   }, [user]);
+
+//   const pickImage = async () => {
+//     const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+//     if (!granted) return;
+
+//     const result = await ImagePicker.launchImageLibraryAsync({
+//       quality: 0.7,
+//     });
+
+//     if (!result.canceled) setPhoto(result.assets[0].uri);
+//   };
+
+//   const saveProfile = async () => {
+//     try {
+//       setLoading(true);
+//       const res = await updateProfile(form);
+//       setUser(res.user);
+
+//       if (photo && photo !== user.photoUrl) {
+//         const imgRes = await uploadPhoto(photo);
+//         setUser(imgRes.user);
+//       }
+//     } catch (err) {
+//       console.log(err.message);
+//     }
+//     setLoading(false);
+//   };
+
+//   if (!user) return null;
+
+//   return (
+//     <ScrollView style={{ backgroundColor: "#f5f7fa" }}>
+//       <View style={styles.header}>
+//         <TouchableOpacity onPress={pickImage}>
+//           <Image
+//             source={{ uri: photo || "https://i.pravatar.cc/200" }}
+//             style={styles.avatar}
+//           />
+//         </TouchableOpacity>
+//         <Text style={styles.name}>{user.name}</Text>
+//         <Text style={styles.sub}>
+//           {user.college} • {user.branch} • {user.batch}
+//         </Text>
+//       </View>
+
+//       <View style={styles.card}>
+//         <Text>Name</Text>
+//         <TextInput style={styles.input} value={form.name} onChangeText={(v) => setForm({ ...form, name: v })} />
+
+//         <Text>Company</Text>
+//         <TextInput style={styles.input} value={form.company} onChangeText={(v) => setForm({ ...form, company: v })} />
+
+//         <Text>City</Text>
+//         <TextInput style={styles.input} value={form.city} onChangeText={(v) => setForm({ ...form, city: v })} />
+
+//         <Text>Bio</Text>
+//         <TextInput
+//           style={[styles.input, { height: 80 }]}
+//           multiline
+//           value={form.bio}
+//           onChangeText={(v) => setForm({ ...form, bio: v })}
+//         />
+
+//         {loading ? (
+//           <ActivityIndicator />
+//         ) : (
+//           <TouchableOpacity style={styles.saveBtn} onPress={saveProfile}>
+//             <Text style={{ color: "#fff", fontWeight: "bold" }}>Save</Text>
+//           </TouchableOpacity>
+//         )}
+//       </View>
+//     </ScrollView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   header: {
+//     alignItems: "center",
+//     padding: 20,
+//     backgroundColor: "#fff",
+//   },
+//   avatar: { width: 100, height: 100, borderRadius: 50 },
+//   name: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
+//   sub: { color: "#555" },
+
+//   card: {
+//     backgroundColor: "#fff",
+//     padding: 15,
+//     margin: 15,
+//     borderRadius: 10,
+//     elevation: 2,
+//   },
+//   input: {
+//     borderWidth: 1,
+//     borderColor: "#ddd",
+//     padding: 10,
+//     marginTop: 5,
+//     marginBottom: 15,
+//     borderRadius: 6,
+//   },
+//   saveBtn: {
+//     backgroundColor: "#2563eb",
+//     padding: 12,
+//     alignItems: "center",
+//     borderRadius: 6,
+//   },
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ---------------------------------- upper one is main ------ changes start from below here --------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useContext, useEffect, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   ScrollView,
+//   Image,
+//   TouchableOpacity,
+//   ActivityIndicator,
+//   Alert,
+// } from "react-native";
+// import { AuthContext } from "../../context/AuthContext";
+// import { updateProfile, uploadPhoto } from "../../api/api";
+// import * as ImagePicker from "expo-image-picker";
+
+// export default function ProfileScreen() {
+//   const { user, setUser } = useContext(AuthContext);
+
+//   const [loading, setLoading] = useState(false);
+//   const [photo, setPhoto] = useState(null);
+
+//   const [form, setForm] = useState({
+//     name: "",
+//     company: "",
+//     city: "",
+//     bio: "",
+//   });
+
+//   /* -------------------- Load user data -------------------- */
+//   useEffect(() => {
+//     if (!user) return;
+
+//     setForm({
+//       name: user.name || "",
+//       company: user.company || "",
+//       city: user.city || "",
+//       bio: user.bio || "",
+//     });
+
+//     setPhoto(user.photoUrl || null);
+//   }, [user]);
+
+//   /* -------------------- Pick image -------------------- */
+//   const pickImage = async () => {
+//     const { granted } =
+//       await ImagePicker.requestMediaLibraryPermissionsAsync();
+//     if (!granted) {
+//       Alert.alert("Permission required", "Please allow gallery access.");
+//       return;
+//     }
+
+//     const result = await ImagePicker.launchImageLibraryAsync({
+//       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+//       quality: 0.7,
+//     });
+
+//     if (!result.canceled) {
+//       setPhoto(result.assets[0].uri);
+//     }
+//   };
+
+//   /* -------------------- Save profile -------------------- */
+//   const saveProfile = async () => {
+//     if (!user) return;
+
+//     try {
+//       setLoading(true);
+
+//       /* ---- Update text fields ---- */
+//       const res = await updateProfile(form);
+
+//       if (res?.success && res.user) {
+//         setUser((prev) => ({ ...prev, ...res.user }));
+//       } else {
+//         throw new Error("Profile update failed");
+//       }
+
+//       /* ---- Upload photo if changed ---- */
+//       if (photo && photo !== user.photoUrl) {
+//         const imgRes = await uploadPhoto(photo);
+
+//         if (imgRes?.photoUrl) {
+//           setUser((prev) => ({
+//             ...prev,
+//             photoUrl: imgRes.photoUrl,
+//           }));
+//         }
+//       }
+
+//       Alert.alert("Success", "Profile updated successfully");
+//     } catch (err) {
+//       console.log("Profile save error:", err.message);
+//       Alert.alert(
+//         "Save failed",
+//         "Network issue. You are still logged in. Try again."
+//       );
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (!user) return null;
+
+//   return (
+//     <ScrollView style={{ backgroundColor: "#f5f7fa" }}>
+//       {/* ---------------- Header ---------------- */}
+//       <View style={styles.header}>
+//         <TouchableOpacity onPress={pickImage}>
+//           <Image
+//             source={{ uri: photo || "https://i.pravatar.cc/200" }}
+//             style={styles.avatar}
+//           />
+//         </TouchableOpacity>
+
+//         <Text style={styles.name}>{user.name}</Text>
+//         <Text style={styles.sub}>
+//           {user.college} • {user.branch} • {user.batch}
+//         </Text>
+//       </View>
+
+//       {/* ---------------- Form ---------------- */}
+//       <View style={styles.card}>
+//         <Text>Name</Text>
+//         <TextInput
+//           style={styles.input}
+//           value={form.name}
+//           onChangeText={(v) => setForm({ ...form, name: v })}
+//         />
+
+//         <Text>Company</Text>
+//         <TextInput
+//           style={styles.input}
+//           value={form.company}
+//           onChangeText={(v) => setForm({ ...form, company: v })}
+//         />
+
+//         <Text>City</Text>
+//         <TextInput
+//           style={styles.input}
+//           value={form.city}
+//           onChangeText={(v) => setForm({ ...form, city: v })}
+//         />
+
+//         <Text>Bio</Text>
+//         <TextInput
+//           style={[styles.input, { height: 80 }]}
+//           multiline
+//           value={form.bio}
+//           onChangeText={(v) => setForm({ ...form, bio: v })}
+//         />
+
+//         {loading ? (
+//           <ActivityIndicator />
+//         ) : (
+//           <TouchableOpacity style={styles.saveBtn} onPress={saveProfile}>
+//             <Text style={{ color: "#fff", fontWeight: "bold" }}>
+//               Save Profile
+//             </Text>
+//           </TouchableOpacity>
+//         )}
+//       </View>
+//     </ScrollView>
+//   );
+// }
+
+// /* -------------------- Styles -------------------- */
+// const styles = StyleSheet.create({
+//   header: {
+//     alignItems: "center",
+//     padding: 20,
+//     backgroundColor: "#fff",
+//   },
+//   avatar: { width: 100, height: 100, borderRadius: 50 },
+//   name: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
+//   sub: { color: "#555" },
+
+//   card: {
+//     backgroundColor: "#fff",
+//     padding: 15,
+//     margin: 15,
+//     borderRadius: 10,
+//     elevation: 2,
+//   },
+//   input: {
+//     borderWidth: 1,
+//     borderColor: "#ddd",
+//     padding: 10,
+//     marginTop: 5,
+//     marginBottom: 15,
+//     borderRadius: 6,
+//   },
+//   saveBtn: {
+//     backgroundColor: "#2563eb",
+//     padding: 12,
+//     alignItems: "center",
+//     borderRadius: 6,
+//   },
+// });
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------- upper one is main ------ changes start from below here --------------------
+
+
+
+
+
+
+
+
+
+
+
 import React, { useContext, useEffect, useState } from "react";
 import {
   View,
@@ -319,15 +720,23 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
 import { updateProfile, uploadPhoto } from "../../api/api";
 import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+
+/* ------------------ BACKEND BASE URL ------------------ */
+const BASE_URL =
+  Constants.expoConfig?.extra?.API_URL ||
+  "http://192.168.0.102:5000";
 
 export default function ProfileScreen() {
   const { user, setUser } = useContext(AuthContext);
+
   const [loading, setLoading] = useState(false);
-  const [photo, setPhoto] = useState(null);
+  const [photoUri, setPhotoUri] = useState(null); // 👈 LOCAL image only
 
   const [form, setForm] = useState({
     name: "",
@@ -336,71 +745,129 @@ export default function ProfileScreen() {
     bio: "",
   });
 
+  /* -------------------- Load user data -------------------- */
   useEffect(() => {
-    if (user) {
-      setForm({
-        name: user.name || "",
-        company: user.company || "",
-        city: user.city || "",
-        bio: user.bio || "",
-      });
-      setPhoto(user.photoUrl || null);
-    }
-  }, [user]);
+    if (!user) return;
 
-  const pickImage = async () => {
-    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!granted) return;
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      quality: 0.7,
+    setForm({
+      name: user.name || "",
+      company: user.company || "",
+      city: user.city || "",
+      bio: user.bio || "",
     });
 
-    if (!result.canceled) setPhoto(result.assets[0].uri);
-  };
+    setPhotoUri(null); // reset local image
+  }, [user]);
 
-  const saveProfile = async () => {
+  /* -------------------- Pick image (NO permission call) -------------------- */
+  const pickImage = async () => {
     try {
-      setLoading(true);
-      const res = await updateProfile(form);
-      setUser(res.user);
+      const result = await ImagePicker.launchImageLibraryAsync({
+        // mediaTypes: ImagePicker.MediaType.Images,
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
 
-      if (photo && photo !== user.photoUrl) {
-        const imgRes = await uploadPhoto(photo);
-        setUser(imgRes.user);
+      if (!result.canceled) {
+        setPhotoUri(result.assets[0].uri); // LOCAL FILE URI
       }
     } catch (err) {
-      console.log(err.message);
+      console.log("Image picker error:", err.message);
+      Alert.alert("Error", "Could not open gallery");
     }
-    setLoading(false);
+  };
+
+  /* -------------------- Save profile -------------------- */
+  const saveProfile = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+
+      /* ---- Update text fields ---- */
+      const res = await updateProfile(form);
+
+      if (!res?.success || !res.user) {
+        throw new Error("Profile update failed");
+      }
+
+      setUser((prev) => ({ ...prev, ...res.user }));
+
+      /* ---- Upload photo if selected ---- */
+      if (photoUri) {
+        const imgRes = await uploadPhoto(photoUri);
+
+        if (imgRes?.photoUrl) {
+          setUser((prev) => ({
+            ...prev,
+            photoUrl: imgRes.photoUrl,
+          }));
+          setPhotoUri(null); // clear local after upload
+        }
+      }
+
+      Alert.alert("Success", "Profile updated successfully");
+    } catch (err) {
+      console.log("Profile save error:", err.message);
+      Alert.alert(
+        "Save failed",
+        "Network issue. You are still logged in."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!user) return null;
 
+/* -------------------- Resolve image source -------------------- */
+  const imageSource = photoUri
+    ? photoUri.startsWith("http") || photoUri.startsWith("file")
+      ? { uri: photoUri } // local OR absolute URL
+      : { uri: `${BASE_URL}${photoUri}` } // backend-relative path
+    : user?.photoUrl
+    ? { uri: `${BASE_URL}${user.photoUrl}` }
+    : { uri: "https://i.pravatar.cc/200" };
+
+
   return (
     <ScrollView style={{ backgroundColor: "#f5f7fa" }}>
+      {/* ---------------- Header ---------------- */}
       <View style={styles.header}>
         <TouchableOpacity onPress={pickImage}>
-          <Image
-            source={{ uri: photo || "https://i.pravatar.cc/200" }}
-            style={styles.avatar}
-          />
+          <Image source={imageSource} style={styles.avatar} />
         </TouchableOpacity>
+
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.sub}>
           {user.college} • {user.branch} • {user.batch}
         </Text>
       </View>
 
+      {/* ---------------- Form ---------------- */}
       <View style={styles.card}>
         <Text>Name</Text>
-        <TextInput style={styles.input} value={form.name} onChangeText={(v) => setForm({ ...form, name: v })} />
+        <TextInput
+          style={styles.input}
+          value={form.name}
+          onChangeText={(v) => setForm({ ...form, name: v })}
+        />
 
         <Text>Company</Text>
-        <TextInput style={styles.input} value={form.company} onChangeText={(v) => setForm({ ...form, company: v })} />
+        <TextInput
+          style={styles.input}
+          value={form.company}
+          onChangeText={(v) => setForm({ ...form, company: v })}
+        />
 
         <Text>City</Text>
-        <TextInput style={styles.input} value={form.city} onChangeText={(v) => setForm({ ...form, city: v })} />
+        <TextInput
+          style={styles.input}
+          value={form.city}
+          onChangeText={(v) => setForm({ ...form, city: v })}
+        />
 
         <Text>Bio</Text>
         <TextInput
@@ -414,7 +881,9 @@ export default function ProfileScreen() {
           <ActivityIndicator />
         ) : (
           <TouchableOpacity style={styles.saveBtn} onPress={saveProfile}>
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>Save</Text>
+            <Text style={{ color: "#fff", fontWeight: "bold" }}>
+              Save Profile
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -422,13 +891,19 @@ export default function ProfileScreen() {
   );
 }
 
+/* -------------------- Styles -------------------- */
 const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     padding: 20,
     backgroundColor: "#fff",
   },
-  avatar: { width: 100, height: 100, borderRadius: 50 },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#eee",
+  },
   name: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
   sub: { color: "#555" },
 
