@@ -145,3 +145,76 @@ export default function AppNavigator() {
     </Stack.Navigator>
   );
 }
+
+
+
+
+
+
+
+
+
+
+// ----------------------------- upper one is main ------ changes start from below here 3rd--------------------
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useContext } from "react";
+// import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import { AuthContext } from "../context/AuthContext";
+
+// /* -------- Auth Screens -------- */
+// import LoginScreen from "../screens/auth/LoginScreen";
+// import RegisterScreen from "../screens/auth/RegisterScreen";
+
+// /* -------- Main App -------- */
+// import AppTabs from "./app/AppTabs";
+
+// /* -------- Extra Screens (Stack over Tabs) -------- */
+// import AlumniDetailScreen from "../screens/alumni/AlumniDetailScreen";
+// // future:
+// // import CreatePostScreen from "../screens/posts/CreatePostScreen";
+// // import EventDetailScreen from "../screens/events/EventDetailScreen";
+
+// const Stack = createNativeStackNavigator();
+
+// export default function AppNavigator() {
+//   const { user } = useContext(AuthContext);
+
+//   return (
+//     <Stack.Navigator screenOptions={{ headerShown: false }}>
+//       {user ? (
+//         <>
+//           {/* Bottom Tabs (Home, Alumni, Profile) */}
+//           <Stack.Screen name="Main" component={AppTabs} />
+
+//           {/* Stack screens over tabs */}
+//           <Stack.Screen
+//             name="AlumniDetail"
+//             component={AlumniDetailScreen}
+//           />
+
+//           {/* Reserved for next phase */}
+//           {/*
+//           <Stack.Screen name="CreatePost" component={CreatePostScreen} />
+//           <Stack.Screen name="EventDetail" component={EventDetailScreen} />
+//           */}
+//         </>
+//       ) : (
+//         <>
+//           <Stack.Screen name="Login" component={LoginScreen} />
+//           <Stack.Screen name="Register" component={RegisterScreen} />
+//         </>
+//       )}
+//     </Stack.Navigator>
+//   );
+// }

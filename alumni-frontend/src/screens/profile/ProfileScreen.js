@@ -710,6 +710,244 @@
 
 
 
+// import React, { useContext, useEffect, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   ScrollView,
+//   Image,
+//   TouchableOpacity,
+//   ActivityIndicator,
+//   Alert,
+// } from "react-native";
+// import { AuthContext } from "../../context/AuthContext";
+// import { updateProfile, uploadPhoto } from "../../api/api";
+// import * as ImagePicker from "expo-image-picker";
+// import Constants from "expo-constants";
+
+// /* ------------------ BACKEND BASE URL ------------------ */
+// const BASE_URL =
+//   Constants.expoConfig?.extra?.API_URL ||
+//   "http://192.168.0.102:5000";
+
+// export default function ProfileScreen() {
+//   const { user, setUser } = useContext(AuthContext);
+
+//   const [loading, setLoading] = useState(false);
+//   const [photoUri, setPhotoUri] = useState(null); // 👈 LOCAL image only
+
+//   const [form, setForm] = useState({
+//     name: "",
+//     company: "",
+//     city: "",
+//     bio: "",
+//   });
+
+//   /* -------------------- Load user data -------------------- */
+//   useEffect(() => {
+//     if (!user) return;
+
+//     setForm({
+//       name: user.name || "",
+//       company: user.company || "",
+//       city: user.city || "",
+//       bio: user.bio || "",
+//     });
+
+//     setPhotoUri(null); // reset local image
+//   }, [user]);
+
+//   /* -------------------- Pick image (NO permission call) -------------------- */
+//   const pickImage = async () => {
+//     try {
+//       const result = await ImagePicker.launchImageLibraryAsync({
+//         // mediaTypes: ImagePicker.MediaType.Images,
+//         mediaTypes: ["images"],
+//         allowsEditing: true,
+//         aspect: [1, 1],
+//         quality: 0.8,
+//       });
+
+//       if (!result.canceled) {
+//         setPhotoUri(result.assets[0].uri); // LOCAL FILE URI
+//       }
+//     } catch (err) {
+//       console.log("Image picker error:", err.message);
+//       Alert.alert("Error", "Could not open gallery");
+//     }
+//   };
+
+//   /* -------------------- Save profile -------------------- */
+//   const saveProfile = async () => {
+//     if (!user) return;
+
+//     try {
+//       setLoading(true);
+
+//       /* ---- Update text fields ---- */
+//       const res = await updateProfile(form);
+
+//       if (!res?.success || !res.user) {
+//         throw new Error("Profile update failed");
+//       }
+
+//       setUser((prev) => ({ ...prev, ...res.user }));
+
+//       /* ---- Upload photo if selected ---- */
+//       if (photoUri) {
+//         const imgRes = await uploadPhoto(photoUri);
+
+//         if (imgRes?.photoUrl) {
+//           setUser((prev) => ({
+//             ...prev,
+//             photoUrl: imgRes.photoUrl,
+//           }));
+//           setPhotoUri(null); // clear local after upload
+//         }
+//       }
+
+//       Alert.alert("Success", "Profile updated successfully");
+//     } catch (err) {
+//       console.log("Profile save error:", err.message);
+//       Alert.alert(
+//         "Save failed",
+//         "Network issue. You are still logged in."
+//       );
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (!user) return null;
+
+// /* -------------------- Resolve image source -------------------- */
+//   const imageSource = photoUri
+//     ? photoUri.startsWith("http") || photoUri.startsWith("file")
+//       ? { uri: photoUri } // local OR absolute URL
+//       : { uri: `${BASE_URL}${photoUri}` } // backend-relative path
+//     : user?.photoUrl
+//     ? { uri: `${BASE_URL}${user.photoUrl}` }
+//     : { uri: "https://i.pravatar.cc/200" };
+
+
+//   return (
+//     <ScrollView style={{ backgroundColor: "#f5f7fa" }}>
+//       {/* ---------------- Header ---------------- */}
+//       <View style={styles.header}>
+//         <TouchableOpacity onPress={pickImage}>
+//           <Image source={imageSource} style={styles.avatar} />
+//         </TouchableOpacity>
+
+//         <Text style={styles.name}>{user.name}</Text>
+//         <Text style={styles.sub}>
+//           {user.college} • {user.branch} • {user.batch}
+//         </Text>
+//       </View>
+
+//       {/* ---------------- Form ---------------- */}
+//       <View style={styles.card}>
+//         <Text>Name</Text>
+//         <TextInput
+//           style={styles.input}
+//           value={form.name}
+//           onChangeText={(v) => setForm({ ...form, name: v })}
+//         />
+
+//         <Text>Company</Text>
+//         <TextInput
+//           style={styles.input}
+//           value={form.company}
+//           onChangeText={(v) => setForm({ ...form, company: v })}
+//         />
+
+//         <Text>City</Text>
+//         <TextInput
+//           style={styles.input}
+//           value={form.city}
+//           onChangeText={(v) => setForm({ ...form, city: v })}
+//         />
+
+//         <Text>Bio</Text>
+//         <TextInput
+//           style={[styles.input, { height: 80 }]}
+//           multiline
+//           value={form.bio}
+//           onChangeText={(v) => setForm({ ...form, bio: v })}
+//         />
+
+//         {loading ? (
+//           <ActivityIndicator />
+//         ) : (
+//           <TouchableOpacity style={styles.saveBtn} onPress={saveProfile}>
+//             <Text style={{ color: "#fff", fontWeight: "bold" }}>
+//               Save Profile
+//             </Text>
+//           </TouchableOpacity>
+//         )}
+//       </View>
+//     </ScrollView>
+//   );
+// }
+
+// /* -------------------- Styles -------------------- */
+// const styles = StyleSheet.create({
+//   header: {
+//     alignItems: "center",
+//     padding: 20,
+//     backgroundColor: "#fff",
+//   },
+//   avatar: {
+//     width: 100,
+//     height: 100,
+//     borderRadius: 50,
+//     backgroundColor: "#eee",
+//   },
+//   name: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
+//   sub: { color: "#555" },
+
+//   card: {
+//     backgroundColor: "#fff",
+//     padding: 15,
+//     margin: 15,
+//     borderRadius: 10,
+//     elevation: 2,
+//   },
+//   input: {
+//     borderWidth: 1,
+//     borderColor: "#ddd",
+//     padding: 10,
+//     marginTop: 5,
+//     marginBottom: 15,
+//     borderRadius: 6,
+//   },
+//   saveBtn: {
+//     backgroundColor: "#2563eb",
+//     padding: 12,
+//     alignItems: "center",
+//     borderRadius: 6,
+//   },
+// });
+
+
+
+
+
+
+
+
+
+// ------------------------------------ upper one is main ------ changes start from below here --------------------
+
+
+
+
+
+
+
+
+
 import React, { useContext, useEffect, useState } from "react";
 import {
   View,
@@ -722,6 +960,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "../../context/AuthContext";
 import { updateProfile, uploadPhoto } from "../../api/api";
 import * as ImagePicker from "expo-image-picker";
@@ -736,7 +975,7 @@ export default function ProfileScreen() {
   const { user, setUser } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
-  const [photoUri, setPhotoUri] = useState(null); // 👈 LOCAL image only
+  const [photoUri, setPhotoUri] = useState(null); // LOCAL preview only
 
   const [form, setForm] = useState({
     name: "",
@@ -756,14 +995,13 @@ export default function ProfileScreen() {
       bio: user.bio || "",
     });
 
-    setPhotoUri(null); // reset local image
+    setPhotoUri(null); // reset local preview
   }, [user]);
 
-  /* -------------------- Pick image (NO permission call) -------------------- */
+  /* -------------------- Pick image -------------------- */
   const pickImage = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        // mediaTypes: ImagePicker.MediaType.Images,
         mediaTypes: ["images"],
         allowsEditing: true,
         aspect: [1, 1],
@@ -804,7 +1042,7 @@ export default function ProfileScreen() {
             ...prev,
             photoUrl: imgRes.photoUrl,
           }));
-          setPhotoUri(null); // clear local after upload
+          setPhotoUri(null); // clear local preview
         }
       }
 
@@ -822,23 +1060,23 @@ export default function ProfileScreen() {
 
   if (!user) return null;
 
-/* -------------------- Resolve image source -------------------- */
+  /* -------------------- Resolve avatar source -------------------- */
   const imageSource = photoUri
-    ? photoUri.startsWith("http") || photoUri.startsWith("file")
-      ? { uri: photoUri } // local OR absolute URL
-      : { uri: `${BASE_URL}${photoUri}` } // backend-relative path
+    ? { uri: photoUri } // LOCAL preview
     : user?.photoUrl
-    ? { uri: `${BASE_URL}${user.photoUrl}` }
+    ? { uri: `${BASE_URL}${user.photoUrl}` } // BACKEND image
     : { uri: "https://i.pravatar.cc/200" };
 
-
   return (
-    <ScrollView style={{ backgroundColor: "#f5f7fa" }}>
+    <ScrollView style={{ backgroundColor: "#f0f2f5" }}>
       {/* ---------------- Header ---------------- */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={pickImage}>
+        <View style={styles.avatarWrapper}>
           <Image source={imageSource} style={styles.avatar} />
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
+            <Ionicons name="camera" size={16} color="#fff" />
+          </TouchableOpacity>
+        </View>
 
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.sub}>
@@ -848,30 +1086,30 @@ export default function ProfileScreen() {
 
       {/* ---------------- Form ---------------- */}
       <View style={styles.card}>
-        <Text>Name</Text>
+        <Text style={styles.label}>Name</Text>
         <TextInput
           style={styles.input}
           value={form.name}
           onChangeText={(v) => setForm({ ...form, name: v })}
         />
 
-        <Text>Company</Text>
+        <Text style={styles.label}>Company</Text>
         <TextInput
           style={styles.input}
           value={form.company}
           onChangeText={(v) => setForm({ ...form, company: v })}
         />
 
-        <Text>City</Text>
+        <Text style={styles.label}>City</Text>
         <TextInput
           style={styles.input}
           value={form.city}
           onChangeText={(v) => setForm({ ...form, city: v })}
         />
 
-        <Text>Bio</Text>
+        <Text style={styles.label}>Bio</Text>
         <TextInput
-          style={[styles.input, { height: 80 }]}
+          style={[styles.input, { height: 90 }]}
           multiline
           value={form.bio}
           onChangeText={(v) => setForm({ ...form, bio: v })}
@@ -881,9 +1119,7 @@ export default function ProfileScreen() {
           <ActivityIndicator />
         ) : (
           <TouchableOpacity style={styles.saveBtn} onPress={saveProfile}>
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>
-              Save Profile
-            </Text>
+            <Text style={styles.saveText}>Save Profile</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -895,37 +1131,73 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   header: {
     alignItems: "center",
-    padding: 20,
+    padding: 25,
     backgroundColor: "#fff",
+    marginBottom: 10,
   },
+
+  avatarWrapper: {
+    position: "relative",
+  },
+
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     backgroundColor: "#eee",
   },
-  name: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
-  sub: { color: "#555" },
+
+  editIcon: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: "#2563eb",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 3,
+  },
+
+  name: { fontSize: 22, fontWeight: "bold", marginTop: 12 },
+  sub: { color: "#555", marginTop: 4 },
 
   card: {
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 16,
     margin: 15,
-    borderRadius: 10,
+    borderRadius: 12,
     elevation: 2,
   },
+
+  label: {
+    fontSize: 13,
+    color: "#555",
+    marginBottom: 4,
+    fontWeight: "600",
+  },
+
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
-    padding: 10,
-    marginTop: 5,
+    padding: 12,
     marginBottom: 15,
-    borderRadius: 6,
+    borderRadius: 8,
+    backgroundColor: "#fafafa",
   },
+
   saveBtn: {
     backgroundColor: "#2563eb",
-    padding: 12,
+    padding: 14,
     alignItems: "center",
-    borderRadius: 6,
+    borderRadius: 8,
+    marginTop: 5,
+  },
+
+  saveText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });

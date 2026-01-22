@@ -211,8 +211,8 @@ export default function RegisterScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#f5f7fa" },
-  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 20 },
+  container: { padding: 30, backgroundColor: "#f5f7fa" },
+  title: {  fontSize: 25, fontWeight: "bold", textAlign: "center", marginTop: 65,marginBottom: 20 },
   input: {
     backgroundColor: "#fff",
     padding: 12,
