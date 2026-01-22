@@ -32,11 +32,6 @@ const UserSchema = new mongoose.Schema({
   approved: { type: Boolean, default: false }
 }, { timestamps: true });
 
-// Ensure either graduationYear or year is present (optional - remove if not desired)
-// UserSchema.path('graduationYear').validate(function(v) {
-//   return !!(v || this.year);
-// }, 'Either graduationYear or year must be provided.');
-
 // Remove sensitive fields when converting to JSON
 UserSchema.methods.toJSON = function () {
   const obj = this.toObject();
